@@ -14,7 +14,7 @@ function Watchify(inputTree, options) {
   this.options = _.extend(this.getDefaultOptions(), options);
   this.inputTree = inputTree;
   this.watchifyData = watchify.args;
-};
+}
 
 Watchify.prototype = Object.create(Writer.prototype);
 Watchify.prototype.constructor = Watchify;

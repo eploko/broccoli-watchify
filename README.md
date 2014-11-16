@@ -27,7 +27,7 @@ tree = watchify(tree, options);
 * `entries`: (default `[]`) Array of files to be used as entry points
 * `outputFile`: (default `"./browserify.js"`) Output file
 * `browserify`: (default `{}`) Options passed to the [browserify constructor](https://github.com/substack/node-browserify#var-b--browserifyfiles-or-opts)
-* `require`: (default []) An array of file, option pairs passed to [browserify require method](https://github.com/substack/node-browserify#brequirefile-opts)
+* `require`: (default `[]`) An array of file, option pairs passed to [browserify require method](https://github.com/substack/node-browserify#brequirefile-opts)
 
 ## Changelog
 

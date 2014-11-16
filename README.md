@@ -37,11 +37,10 @@ tree = watchify(tree, options);
 
 ## Contributors
 
-* [Andrey Subbotin](http://github.com/eploko)
-* [Gareth Andrew](http://github.com/gingerhendrix)
+The code of this plugin is originally based on the [broccoli-browserify](https://github.com/gingerhendrix/broccoli-browserify) plugin by [Gareth Andrew](http://github.com/gingerhendrix).
 
 ## License
 
 The MIT License (MIT). See [LICENSE](LICENSE) for details.
 
-Copyright (c) 2014 Andrey Subbotin
+Copyright © 2014 Andrey Subbotin.

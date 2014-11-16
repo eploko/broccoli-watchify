@@ -1,7 +1,7 @@
 {
   "name": "broccoli-watchify",
   "version": "0.1.0",
-  "description": "A Watchify plugin for Broccoli.",
+  "description": "Watchify plugin for Broccoli.",
   "main": "index.js",
   "scripts": {
     "test": "jshint *.js"

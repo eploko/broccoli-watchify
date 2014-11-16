@@ -42,5 +42,6 @@ tree = watchify(tree, options);
 
 ## License
 
-MIT © Andrey Subbotin
+The MIT License (MIT). See [LICENSE](LICENSE) for details.
 
+Copyright (c) 2014 Andrey Subbotin

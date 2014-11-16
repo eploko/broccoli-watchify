@@ -35,15 +35,13 @@ Watchify.prototype.write = function (readTree, destDir) {
     mkdirp.sync(path.join(destDir, path.dirname(o.outputFile)));
 
     o.browserify.basedir = srcDir;
-    var b = browserify(_.extend(o.browserify, self.watchifyData));
-    var w = watchify(b);
 
-    for (var i = 0; i < o.entries.length; i++) {
-      w.add(o.entries[i]);
-    }
-    for(var i = 0; i < o.require.length; i++){
-      w.require.apply(w, o.require[i]);
-    }
+    var w = watchify(browserify(_.extend(o.browserify, self.watchifyData)));
+
+    _.each(o.entries, w.add.bind(w));
+    _.each(o.require, function (req) {
+      w.require.apply(w, req);      
+    });
 
     return new RSVP.Promise(function (resolve, reject) {
       w.bundle(function (err, data) {

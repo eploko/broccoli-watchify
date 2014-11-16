@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
-var RSVP = require('rsvp');
+var Promise = require('es6-promise').Promise;
 var mkdirp = require('mkdirp');
 var browserify = require('browserify');
 var watchify = require('watchify');
@@ -43,7 +43,7 @@ Watchify.prototype.write = function (readTree, destDir) {
       w.require.apply(w, req);      
     });
 
-    return new RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
       w.bundle(function (err, data) {
         if (err) {
           reject(err);

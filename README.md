@@ -1,4 +1,5 @@
 # broccoli-watchify
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/eploko/broccoli-watchify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The broccoli-watchify plugin bundles your assets with 
 [watchify](https://github.com/substack/watchify).

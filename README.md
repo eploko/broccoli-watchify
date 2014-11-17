@@ -14,7 +14,21 @@ npm install --save-dev broccoli-watchify
 
 ```js
 var watchify = require('broccoli-watchify');
-tree = watchify(tree, options);
+
+var options = {
+  browserify: {
+    entries: ['./app.js'],
+    debug: true
+  },
+  outputFile: 'bundled/app.js',
+  cache: true,
+  init: function (b) {
+    b.transform('reactify', {'es6': true});
+    b.external('$');
+  }  
+};
+
+var tree = watchify(tree, options);
 ```
 
 ## API
@@ -25,20 +39,18 @@ tree = watchify(tree, options);
 
 ####Options
  
-* `entries`: (default `[]`) Array of files to be used as entry points
-* `outputFile`: (default `"./browserify.js"`) Output file
-* `browserify`: (default `{}`) Options passed to the [browserify constructor](https://github.com/substack/node-browserify#var-b--browserifyfiles-or-opts)
-* `require`: (default `[]`) An array of file, option pairs passed to [browserify require method](https://github.com/substack/node-browserify#brequirefile-opts)
-* `exclude`: (default `[]`) An array of files passed to [browserify exclude method](https://github.com/substack/node-browserify#bexcludefile)
-* `external`: (default `[]`) An array of files passed to [browserify external method](https://github.com/substack/node-browserify#bexternalfile)
-* `transform`: (default `[]`) An array of file, option pairs passed to [browserify transform method](https://github.com/substack/node-browserify#btransformtr-opts)
-* `cache`: (default `true`) A boolean flag to potentially switch the caching off and act like a plain browserify. Can be helpful in assembling bundles for production and _not_ including all the full local path names in the bundle, which is not possible in the watchify mode.
+* `browserify`: (defaults to `{}`) Options passed to the [browserify constructor](https://github.com/substack/node-browserify#var-b--browserifyfiles-or-opts)
+* `outputFile`: (defaults to `"./browserify.js"`) Output file
+* `cache`: (defaults to `true`) A boolean flag to potentially switch the caching off and act like a plain browserify. Can be helpful in assembling bundles for production and _not_ including all the full local path names in the bundle, which is not possible in the watchify mode.
+* `init`: (defaults to a no-op) A callback function that receives the browserify instance after it's created. Use this to call any of the [browserify API methods](https://github.com/substack/node-browserify#methods) on the instance, including `add`, `require`, `external`, `exclude` and so on.
 
 ## Changelog
 
 ### 0.2.0
 
-* Expose the `require`, `exclude`, `external` and `transform` properties to further configure the internal browserify instance.
+* Add the `init` option to provide a possibility of configuration of the browserify instance with a custom function.
+* Remove the `entries` and `require` options.
+* Add the `cache` option to turn off the watchify behavior and act like a plain browserify.
 
 ### 0.1.3
 

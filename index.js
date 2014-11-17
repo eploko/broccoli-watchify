@@ -20,14 +20,10 @@ Watchify.prototype = Object.create(Writer.prototype);
 Watchify.prototype.constructor = Watchify;
 Watchify.prototype.getDefaultOptions = function () {
   return {
-    entries: [],
     outputFile: '/browserify.js',
     browserify: {},
-    require: {},
-    transform: [],
-    exclude: [],
-    external: [],
-    cache: true
+    cache: true,
+    init: function (browserify) {}
   };
 };
 
@@ -43,16 +39,8 @@ Watchify.prototype.write = function (readTree, destDir) {
     var browserifyOptions = o.cache ? _.extend(o.browserify, self.watchifyData) : o.browserify;
     var w = browserify(browserifyOptions);
     if (o.cache) { w = watchify(w); }
-
-    _.each(o.entries, w.add.bind(w));
-    _.each(o.require, function (req) {
-      w.require.apply(w, req);      
-    });
-    _.each(o.transform, function (tr) {
-      w.transform.apply(w, tr);      
-    });
-    _.each(o.exclude, w.exclude.bind(w));
-    _.each(o.external, w.external.bind(w));
+      
+    o.init(w);
 
     return new es6.Promise(function (resolve, reject) {
       w.bundle(function (err, data) {

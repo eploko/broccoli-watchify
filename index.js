@@ -23,7 +23,9 @@ Watchify.prototype.getDefaultOptions = function () {
     entries: [],
     outputFile: '/browserify.js',
     browserify: {},
-    require: {}
+    require: {},
+    transform: [],
+    exclude: [],
   };
 };
 
@@ -42,6 +44,10 @@ Watchify.prototype.write = function (readTree, destDir) {
     _.each(o.require, function (req) {
       w.require.apply(w, req);      
     });
+    _.each(o.transform, function (tr) {
+      w.transform.apply(w, tr);      
+    });
+    _.each(o.exclude, w.exclude.bind(w));
 
     return new es6.Promise(function (resolve, reject) {
       w.bundle(function (err, data) {

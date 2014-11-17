@@ -27,6 +27,7 @@ Watchify.prototype.getDefaultOptions = function () {
     transform: [],
     exclude: [],
     external: [],
+    cache: true
   };
 };
 
@@ -39,7 +40,9 @@ Watchify.prototype.write = function (readTree, destDir) {
 
     o.browserify.basedir = srcDir;
 
-    var w = watchify(browserify(_.extend(o.browserify, self.watchifyData)));
+    var browserifyOptions = o.cache ? _.extend(o.browserify, self.watchifyData) : o.browserify;
+    var w = browserify(browserifyOptions);
+    if (o.cache) { w = watchify(w); }
 
     _.each(o.entries, w.add.bind(w));
     _.each(o.require, function (req) {

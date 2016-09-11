@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var assignIn = require('lodash.assignin');
 var fs = require('fs');
 var path = require('path');
 var RSVP = require('rsvp');
@@ -16,7 +16,7 @@ function Watchify(inputTree, options) {
   }
   Plugin.call(this, [inputTree], options);
   this._persistentOutput = true;
-  this.options = _.extend(this.getDefaultOptions(), options);
+  this.options = assignIn(this.getDefaultOptions(), options);
   this.watchifyData = watchify.args;
 
   this._fileToChecksumMap = Object.create(null); // TODO: extract SP
@@ -79,7 +79,7 @@ Watchify.prototype.build = function () {
   var browserifyOptions;
 
   if (this.options.cache) {
-    browserifyOptions = _.extend(this.options.browserify, this.watchifyData);
+    browserifyOptions = assignIn(this.options.browserify, this.watchifyData);
   } else {
     browserifyOptions = this.options.browserify;
   }

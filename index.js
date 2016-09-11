@@ -72,7 +72,7 @@ Watchify.prototype.build = function () {
 
   var outputFile = destDir + '/' + this.options.outputFile;
 
-  mkdirp.sync(path.basename(outputFile));
+  mkdirp.sync(this.outputPath + '/' + path.dirname(outputFile));
 
   this.options.browserify.basedir = this.cachePath;
 

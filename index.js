@@ -7,6 +7,7 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var Plugin = require('broccoli-plugin');
 var md5Hex = require('md5hex');
+var TreeSync = require('tree-sync');
 
 module.exports = Watchify;
 function Watchify(inputTree, options) {
@@ -19,6 +20,7 @@ function Watchify(inputTree, options) {
   this.watchifyData = watchify.args;
 
   this._fileToChecksumMap = Object.create(null); // TODO: extract SP
+  this._tree = undefined;
 }
 
 Watchify.prototype = Object.create(Plugin.prototype);
@@ -44,7 +46,25 @@ Watchify.prototype.writeFileIfContentChanged = function(fullPath, content) {
   }
 };
 
+Watchify.prototype.syncInputAndCache = function() {
+  // node doesn't like symlinks, specifically node x, where x is a symlink will
+  // actually execute with __dirname of the realpath of that symlink. So to
+  // make this work, we deference our inputPath[0] into our cachePath, where we
+  // run browserify/watchify without browserify being aware it is actually
+  // operating on symlinked copies of stuff.
+  //
+  // Note: we likely though, don't want to materialize something like
+  // node_modules. We should investigate this in the future.
+  if (this._tree === undefined) {
+    this._tree = new TreeSync(this.inputPaths[0], this.cachePath);
+  }
+
+  this._tree.sync();
+};
+
 Watchify.prototype.build = function () {
+  this.syncInputAndCache();
+
   var plugin = this;
 
   var srcDir = this.inputPaths[0];
@@ -54,7 +74,7 @@ Watchify.prototype.build = function () {
 
   mkdirp.sync(path.basename(outputFile));
 
-  this.options.browserify.basedir = srcDir;
+  this.options.browserify.basedir = this.cachePath;
 
   var browserifyOptions;
 

@@ -37,6 +37,7 @@
     "watchify": "^3.7.0"
   },
   "devDependencies": {
-    "jshint": "^2.4.4"
+    "jshint": "^2.4.4",
+    "tree-sync": "^1.1.4"
   }
 }

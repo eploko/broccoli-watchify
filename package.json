@@ -34,10 +34,10 @@
     "md5hex": "^1.0.0",
     "mkdirp": "^0.5.1",
     "rsvp": "^3.2.1",
+    "tree-sync": "^1.1.4",
     "watchify": "^3.7.0"
   },
   "devDependencies": {
-    "jshint": "^2.4.4",
-    "tree-sync": "^1.1.4"
+    "jshint": "^2.4.4"
   }
 }

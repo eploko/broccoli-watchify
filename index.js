@@ -9,6 +9,9 @@ var Plugin = require('broccoli-plugin');
 var md5Hex = require('md5hex');
 var TreeSync = require('tree-sync');
 
+var statsForPaths = require('./lib/stats-for-paths');
+var updateCacheFromStats = require('./lib/update-cache-from-stats');
+
 module.exports = Watchify;
 function Watchify(inputTree, options) {
   if (!(this instanceof Watchify)) {
@@ -17,10 +20,11 @@ function Watchify(inputTree, options) {
   Plugin.call(this, [inputTree], options);
   this._persistentOutput = true;
   this.options = assignIn(this.getDefaultOptions(), options);
-  this.watchifyData = watchify.args;
+  this.clearCache();
 
   this._fileToChecksumMap = Object.create(null); // TODO: extract SP
   this._tree = undefined;
+  this._last = false;
 }
 
 Watchify.prototype = Object.create(Plugin.prototype);
@@ -28,7 +32,9 @@ Watchify.prototype.constructor = Watchify;
 Watchify.prototype.getDefaultOptions = function () {
   return {
     outputFile: '/browserify.js',
-    browserify: {},
+    browserify: {
+      entries: ['index.js'],
+    },
     cache: true,
     init: function (browserify) {}
   };
@@ -70,37 +76,64 @@ Watchify.prototype.build = function () {
   var srcDir = this.inputPaths[0];
   var destDir = this.outputPath;
 
+  var outputDir = path.dirname(this.options.outputFile);
   var outputFile = destDir + '/' + this.options.outputFile;
 
-  mkdirp.sync(this.outputPath + '/' + path.dirname(outputFile));
+  mkdirp.sync(this.outputPath + '/' + path.dirname(outputDir));
 
   this.options.browserify.basedir = this.cachePath;
 
-  var browserifyOptions;
+  var browserifyOptions = assignIn(this.options.browserify, this.watchifyData);
 
-  if (this.options.cache) {
-    browserifyOptions = assignIn(this.options.browserify, this.watchifyData);
-  } else {
-    browserifyOptions = this.options.browserify;
+  if (this.options.cache && this._last) {
+    var skipBuild = this.updateCaches();
+    if (skipBuild) { return; }
   }
 
-  var w = browserify(browserifyOptions);
-  if (this.options.cache) { w = watchify(w); }
+  var b = browserify(browserifyOptions);
 
-  this.options.init(w);
+  if (this.options.cache) {
+    b.plugin(watchify);
+  }
+
+  this.options.init(b);
 
   return new RSVP.Promise(function (resolve, reject) {
-    w.bundle(function (err, data) {
-      if (err) {
-        reject(err);
-      } else {
-        try {
+    b.bundle(function (err, data) {
+      try {
+        if (err) {
+          plugin.clearCache();
+          reject(err);
+        } else {
+          plugin.statDependencies();
           plugin.writeFileIfContentChanged(outputFile, data);
           resolve(destDir);
-        } catch (e) {
-          reject(e);
         }
+      } catch (e) {
+        reject(e);
       }
     });
   });
 };
+
+Watchify.prototype.statDependencies = function() {
+  this._last = statsForPaths(Object.keys(this.watchifyData.cache));
+  this._lastPackages = statsForPaths(Object.keys(this.watchifyData.packageCache));
+};
+
+Watchify.prototype.updateCaches = function() {
+  var last = updateCacheFromStats(this._last, this.watchifyData.cache);
+  var lastPackages = updateCacheFromStats(this._lastPackages, this.watchifyData.packageCache);
+
+  return last && lastPackages;
+};
+
+Watchify.prototype.clearCache = function() {
+  this._last = false;
+  this._lastPackages = false;
+  this.watchifyData = {
+    cache: {},
+    packageCache: {}
+  };
+};
+

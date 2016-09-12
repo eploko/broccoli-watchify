@@ -1,10 +1,11 @@
 {
   "name": "broccoli-watchify",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Watchify plugin for Broccoli.",
   "main": "index.js",
   "scripts": {
-    "test": "jshint *.js"
+    "test": "mocha test",
+    "test:debug": "mocha debug test"
   },
   "repository": {
     "type": "git",
@@ -21,21 +22,30 @@
     "incremental",
     "bundle"
   ],
-  "author": "Andrey Subbotin",
+  "author": "Andrey Subbotin & Stefan Penner",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/eploko/broccoli-watchify/issues"
   },
   "homepage": "https://github.com/eploko/broccoli-watchify",
   "dependencies": {
-    "broccoli-writer": "^0.1.1",
-    "browserify": "^6.3.2",
-    "es6-promise": "^2.0.0",
-    "lodash": "^2.4.1",
-    "mkdirp": "^0.5.0",
-    "watchify": "^2.1.1"
+    "broccoli-plugin": "^1.2.1",
+    "browserify": "^13.1.0",
+    "lodash.assignin": "^4.2.0",
+    "md5hex": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "rsvp": "^3.2.1",
+    "through2": "^2.0.1",
+    "tree-sync": "^1.1.4",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "jshint": "^2.4.4"
+    "broccoli-builder": "^0.18.0",
+    "chai": "^3.5.0",
+    "chai-files": "^1.4.0",
+    "fixturify": "^0.3.0",
+    "fs-extra": "^0.30.0",
+    "mocha": "^3.0.2",
+    "mocha-jshint": "^2.3.1"
   }
 }

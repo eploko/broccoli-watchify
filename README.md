@@ -1,7 +1,7 @@
 # broccoli-watchify [![Build Status](https://travis-ci.org/eploko/broccoli-watchify.svg)](https://travis-ci.org/eploko/broccoli-watchify)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/eploko/broccoli-watchify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-The broccoli-watchify plugin bundles your assets with 
+The broccoli-watchify plugin bundles your assets with
 [watchify](https://github.com/substack/watchify).
 
 ## Installation
@@ -25,7 +25,7 @@ var options = {
   init: function (b) {
     b.transform('reactify', {'es6': true});
     b.external('$');
-  }  
+  }
 };
 
 var tree = watchify(tree, options);
@@ -33,18 +33,26 @@ var tree = watchify(tree, options);
 
 ## API
 
-### watchify(tree, options) 
+### watchify(tree, options)
 
 * `tree`: A [broccoli tree](https://github.com/broccolijs/broccoli#plugin-api-specification) or a directory path as a string
 
 ####Options
- 
+
 * `browserify`: (defaults to `{}`) Options passed to the [browserify constructor](https://github.com/substack/node-browserify#var-b--browserifyfiles-or-opts)
 * `outputFile`: (defaults to `"./browserify.js"`) Output file
 * `cache`: (defaults to `true`) A boolean flag to potentially switch the caching off and act like a plain browserify. Can be helpful in assembling bundles for production and _not_ including all the full local path names in the bundle, which is not possible in the watchify mode.
 * `init`: (defaults to a no-op) A callback function that receives the browserify instance after it's created. Use this to call any of the [browserify API methods](https://github.com/substack/node-browserify#methods) on the instance, including `add`, `require`, `external`, `exclude` and so on.
 
 ## Changelog
+
+### 1.0.0
+
+* no longer use watchify directly, as we do not require its watcher and it is not configurable. Rather we populate the cache, the same way watchify does.
+* stable output, so downstream plugins don't invalidated if our output doesn't change
+* much faster
+* basic tests
+* browserified files are browserified relative to the broccoli inputPath not the realpath.
 
 ### 0.2.0
 

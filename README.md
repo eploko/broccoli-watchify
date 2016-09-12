@@ -46,6 +46,14 @@ var tree = watchify(tree, options);
 
 ## Changelog
 
+### 1.0.0
+
+* no longer use watchify directly, as we do not require its watcher and it is not configurable. Rather we populate the cache, the same way watchify does.
+* stable output, so downstream plugins don't invalidated if our output doesn't change
+* much faster
+* basic tests
+* browserified files are browserified relative to the broccoli inputPath not the realpath.
+
 ### 0.2.0
 
 * Add the `init` option to provide a possibility of configuration of the browserify instance with a custom function.

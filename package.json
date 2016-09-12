@@ -35,8 +35,9 @@
     "md5hex": "^1.0.0",
     "mkdirp": "^0.5.1",
     "rsvp": "^3.2.1",
+    "through2": "^2.0.1",
     "tree-sync": "^1.1.4",
-    "watchify": "^3.7.0"
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "broccoli-builder": "^0.18.0",

@@ -4,13 +4,14 @@ var path = require('path');
 var RSVP = require('rsvp');
 var mkdirp = require('mkdirp');
 var browserify = require('browserify');
-var watchify = require('watchify');
 var Plugin = require('broccoli-plugin');
 var md5Hex = require('md5hex');
 var TreeSync = require('tree-sync');
 
 var statsForPaths = require('./lib/stats-for-paths');
 var updateCacheFromStats = require('./lib/update-cache-from-stats');
+var through = require('through2');
+var xtend = require('xtend');
 
 module.exports = Watchify;
 function Watchify(inputTree, options) {
@@ -93,7 +94,8 @@ Watchify.prototype.build = function () {
   var b = browserify(browserifyOptions);
 
   if (this.options.cache) {
-    b.plugin(watchify);
+    b.on('reset', collect.bind(null, b));
+    collect(b);
   }
 
   this.options.init(b);
@@ -137,3 +139,15 @@ Watchify.prototype.clearCache = function() {
   };
 };
 
+// extracted from watchify
+function collect (b) {
+  b.pipeline.get('deps').push(through.obj(function(row, enc, next) {
+    var file = row.expose ? b._expose[row.id] : row.file;
+    b._options.cache[file] = {
+      source: row.source,
+      deps: xtend(row.deps)
+    };
+    this.push(row);
+    next();
+  }));
+}

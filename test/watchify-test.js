@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs-extra');
 var expect = chai.expect;
 var Watchify = require('../');
+var RSVP = require('rsvp');
 
 chai.use(chaiFiles);
 var file = chaiFiles.file;
@@ -30,6 +31,34 @@ describe('broccoli-watchify', function() {
     if (pipeline) {
       pipeline.cleanup();
     }
+  });
+
+  it('has stable output', function() {
+    fixturify.writeSync(INPUT_PATH, {
+      'index.js': "__invoke(require('./a'))",
+      'a.js' : "module.exports = 1;"
+    });
+
+    var node = new Watchify(INPUT_PATH);
+
+    pipeline = new builder.Builder(node);
+
+    var first;
+    return pipeline.build().then(function(results) {
+      first = fs.statSync(results.directory + '/browserify.js');
+      return new RSVP.Promise(function(resolve){
+        // just make sure system with low mtime resolutions are considered,
+        // Most legitimate changes include both mtime/size changes, or one of
+        // the other, rarely just mtime. So although mtime can be stale, in
+        // practice it does not appear to be an issue.
+        setTimeout(resolve, 1000);
+      }).then(function() {
+        return pipeline.build();
+      });
+    }).then(function(results) {
+      var second = fs.statSync(results.directory + '/browserify.js');
+      expect(first).to.eql(second);
+    });
   });
 
   it('defaults work', function() {

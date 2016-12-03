@@ -1,5 +1,5 @@
 var assignIn = require('lodash.assignin');
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var RSVP = require('rsvp');
 var mkdirp = require('mkdirp');
@@ -48,6 +48,7 @@ Watchify.prototype.writeFileIfContentChanged = function(fullPath, content) {
   if (previous === next) {
     // hit
   } else {
+    fs.mkdirpSync(path.dirname(fullPath));
     fs.writeFileSync(fullPath, content);
     this._fileToChecksumMap[fullPath] = next; // update map
   }

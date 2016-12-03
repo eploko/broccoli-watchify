@@ -31,6 +31,7 @@
   "dependencies": {
     "broccoli-plugin": "^1.2.1",
     "browserify": "^13.1.0",
+    "fs-extra": "^1.0.0",
     "lodash.assignin": "^4.2.0",
     "md5hex": "^1.0.0",
     "mkdirp": "^0.5.1",

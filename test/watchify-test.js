@@ -33,6 +33,23 @@ describe('broccoli-watchify', function() {
     }
   });
 
+  it('supports output path with directory', function() {
+    fixturify.writeSync(INPUT_PATH, {
+      'index.js': "__invoke(require('./a'))",
+      'a.js' : "module.exports = 1;"
+    });
+
+    var node = new Watchify(INPUT_PATH, {
+      outputFile: 'bundled/app.js'
+    });
+
+    pipeline = new builder.Builder(node);
+
+    return pipeline.build().then(function(results) {
+      fs.statSync(results.directory + '/bundled/app.js');
+    });
+  });
+
   it('has stable output', function() {
     fixturify.writeSync(INPUT_PATH, {
       'index.js': "__invoke(require('./a'))",

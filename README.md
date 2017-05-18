@@ -37,7 +37,7 @@ var tree = watchify(tree, options);
 
 * `tree`: A [broccoli tree](https://github.com/broccolijs/broccoli#plugin-api-specification) or a directory path as a string
 
-####Options
+#### Options
 
 * `browserify`: (defaults to `{}`) Options passed to the [browserify constructor](https://github.com/substack/node-browserify#var-b--browserifyfiles-or-opts)
 * `outputFile`: (defaults to `"./browserify.js"`) Output file
@@ -48,11 +48,11 @@ var tree = watchify(tree, options);
 
 ### 1.0.0
 
-* no longer use watchify directly, as we do not require its watcher and it is not configurable. Rather we populate the cache, the same way watchify does.
-* stable output, so downstream plugins don't invalidated if our output doesn't change
-* much faster
-* basic tests
-* browserified files are browserified relative to the broccoli inputPath not the realpath.
+* No longer use watchify directly, as we do not require its watcher and it is not configurable. Rather we populate the cache, the same way watchify does.
+* Stable output, so downstream plugins aren't invalidated if our output doesn't change.
+* Much faster.
+* Basic tests.
+* Browserified files are browserified relative to the broccoli `inputPath`, not the realpath.
 
 ### 0.2.0
 

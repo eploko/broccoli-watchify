@@ -13,6 +13,8 @@ var updateCacheFromStats = require('./lib/update-cache-from-stats');
 var through = require('through2');
 var xtend = require('xtend');
 
+var glob = require('glob');
+
 module.exports = Watchify;
 function Watchify(inputTree, options) {
   if (!(this instanceof Watchify)) {
@@ -23,9 +25,11 @@ function Watchify(inputTree, options) {
   this.options = assignIn(this.getDefaultOptions(), options);
   this.clearCache();
 
+  this._entries = this.options.browserify.entries;
   this._fileToChecksumMap = Object.create(null); // TODO: extract SP
   this._tree = undefined;
   this._last = false;
+  this._buildCount = 0;
 }
 
 Watchify.prototype = Object.create(Plugin.prototype);
@@ -85,7 +89,15 @@ Watchify.prototype.build = function () {
 
   this.options.browserify.basedir = this.cachePath;
 
+  // interpret all entries as globs and generate a new entries array
+  this.options.browserify.entries = this._entries.reduce(function(acc, entry) {
+    entry = path.join(srcDir, entry);
+    return acc.concat(glob.sync(entry));
+  }, []);
+
   var browserifyOptions = assignIn(this.options.browserify, this.watchifyData);
+
+  this._buildCount++;
 
   if (this.options.cache && this._last) {
     var skipBuild = this.updateCaches();

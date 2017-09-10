@@ -1,7 +1,7 @@
 var chai = require('chai');
 var chaiFiles = require('chai-files');
 var fixturify = require('fixturify');
-var builder = require('broccoli-builder');
+var Builder = require('broccoli').Builder;
 var path = require('path');
 var fs = require('fs-extra');
 var expect = chai.expect;
@@ -35,7 +35,7 @@ describe('broccoli-watchify', function() {
 
   it('supports output path with directory', function() {
     fixturify.writeSync(INPUT_PATH, {
-      'index.js': "__invoke(require('./a'))",
+      'index.js': "__invoke(require('./a')); require('chai')",
       'a.js' : "module.exports = 1;"
     });
 
@@ -43,26 +43,26 @@ describe('broccoli-watchify', function() {
       outputFile: 'bundled/app.js'
     });
 
-    pipeline = new builder.Builder(node);
+    pipeline = new Builder(node);
 
-    return pipeline.build().then(function(results) {
-      fs.statSync(results.directory + '/bundled/app.js');
+    return pipeline.build().then(function() {
+      fs.statSync(pipeline.outputPath + '/bundled/app.js');
     });
   });
 
   it('has stable output', function() {
     fixturify.writeSync(INPUT_PATH, {
-      'index.js': "__invoke(require('./a'))",
+      'index.js': "__invoke(require('./a')); require('chai')",
       'a.js' : "module.exports = 1;"
     });
 
     var node = new Watchify(INPUT_PATH);
 
-    pipeline = new builder.Builder(node);
+    pipeline = new Builder(node);
 
     var first;
-    return pipeline.build().then(function(results) {
-      first = fs.statSync(results.directory + '/browserify.js');
+    return pipeline.build().then(function() {
+      first = fs.statSync(pipeline.outputPath + '/browserify.js');
       return new RSVP.Promise(function(resolve){
         // just make sure system with low mtime resolutions are considered,
         // Most legitimate changes include both mtime/size changes, or one of
@@ -73,23 +73,23 @@ describe('broccoli-watchify', function() {
         return pipeline.build();
       });
     }).then(function(results) {
-      var second = fs.statSync(results.directory + '/browserify.js');
+      var second = fs.statSync(pipeline.outputPath + '/browserify.js');
       expect(first).to.eql(second);
     });
   });
 
   it('defaults work', function() {
     fixturify.writeSync(INPUT_PATH, {
-      'index.js': "__invoke(require('./a'))",
+      'index.js': "__invoke(require('./a')); require('chai')",
       'a.js' : "module.exports = 1;"
     });
 
     var node = new Watchify(INPUT_PATH);
 
-    pipeline = new builder.Builder(node);
+    pipeline = new Builder(node);
 
-    return pipeline.build().then(function(results) {
-      var outputFile = results.directory + '/browserify.js';
+    return pipeline.build().then(function() {
+      var outputFile = pipeline.outputPath + '/browserify.js';
 
       expect(file(outputFile)).to.exist; // jshint ignore:line
 
@@ -104,7 +104,7 @@ describe('broccoli-watchify', function() {
 
       return pipeline.build();
     }).then(function(results) {
-      var outputFile = results.directory + '/browserify.js';
+      var outputFile = pipeline.outputPath + '/browserify.js';
 
       expect(file(outputFile)).to.exist; // jshint ignore:line
 
@@ -135,4 +135,3 @@ describe('broccoli-watchify', function() {
     };
   }
 });
-

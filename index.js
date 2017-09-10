@@ -7,6 +7,7 @@ var browserify = require('browserify');
 var Plugin = require('broccoli-plugin');
 var md5Hex = require('md5hex');
 var TreeSync = require('tree-sync');
+var findUp = require('find-up');
 
 var statsForPaths = require('./lib/stats-for-paths');
 var updateCacheFromStats = require('./lib/update-cache-from-stats');
@@ -81,9 +82,24 @@ Watchify.prototype.build = function () {
   var outputDir = path.dirname(this.options.outputFile);
   var outputFile = destDir + '/' + this.options.outputFile;
 
+  var browserifyPaths = [];
+
+  var nodeModulesDir = findUp.sync('node_modules', {
+    cwd: path.resolve(process.cwd(), srcDir)
+  });
+
+  while (nodeModulesDir) {
+    browserifyPaths.push(nodeModulesDir);
+
+    nodeModulesDir = findUp.sync('node_modules', {
+      cwd: path.resolve(nodeModulesDir, '../..')
+    });
+  }
+
   mkdirp.sync(this.outputPath + '/' + path.dirname(outputDir));
 
   this.options.browserify.basedir = this.cachePath;
+  this.options.browserify.paths = browserifyPaths;
 
   var browserifyOptions = assignIn(this.options.browserify, this.watchifyData);
 

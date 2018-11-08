@@ -7,7 +7,8 @@ var browserify = require('browserify');
 var Plugin = require('broccoli-plugin');
 var md5Hex = require('md5hex');
 var TreeSync = require('tree-sync');
-var findUp = require('find-up');
+var nodeModulesPath = require('node-modules-path');
+var symlinkOrCopySync = require('symlink-or-copy').sync;
 
 var statsForPaths = require('./lib/stats-for-paths');
 var updateCacheFromStats = require('./lib/update-cache-from-stats');
@@ -38,7 +39,8 @@ Watchify.prototype.getDefaultOptions = function () {
       entries: ['index.js'],
     },
     cache: true,
-    init: function (browserify) {}
+    init: function (browserify) {},
+    nodeModulesPath: nodeModulesPath(process.cwd())
   };
 };
 
@@ -65,7 +67,8 @@ Watchify.prototype.syncInputAndCache = function() {
   // Note: we likely though, don't want to materialize something like
   // node_modules. We should investigate this in the future.
   if (this._tree === undefined) {
-    this._tree = new TreeSync(this.inputPaths[0], this.cachePath);
+    symlinkOrCopySync(this.options.nodeModulesPath, this.cachePath + '/node_modules');
+    this._tree = new TreeSync(this.inputPaths[0], this.cachePath + '/build');
   }
 
   this._tree.sync();
@@ -82,24 +85,10 @@ Watchify.prototype.build = function () {
   var outputDir = path.dirname(this.options.outputFile);
   var outputFile = destDir + '/' + this.options.outputFile;
 
-  var browserifyPaths = [];
-
-  var nodeModulesDir = findUp.sync('node_modules', {
-    cwd: path.resolve(process.cwd(), srcDir)
-  });
-
-  while (nodeModulesDir) {
-    browserifyPaths.push(nodeModulesDir);
-
-    nodeModulesDir = findUp.sync('node_modules', {
-      cwd: path.resolve(nodeModulesDir, '../..')
-    });
-  }
-
   mkdirp.sync(this.outputPath + '/' + path.dirname(outputDir));
 
-  this.options.browserify.basedir = this.cachePath;
-  this.options.browserify.paths = browserifyPaths;
+  this.options.browserify.paths = [ this.cachePath + '/node_modules' ];
+  this.options.browserify.basedir = this.cachePath + '/build';
 
   var browserifyOptions = assignIn(this.options.browserify, this.watchifyData);
 

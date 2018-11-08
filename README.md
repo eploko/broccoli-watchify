@@ -43,6 +43,7 @@ var tree = watchify(tree, options);
 * `outputFile`: (defaults to `"./browserify.js"`) Output file
 * `cache`: (defaults to `true`) A boolean flag to potentially switch the caching off and act like a plain browserify. Can be helpful in assembling bundles for production and _not_ including all the full local path names in the bundle, which is not possible in the watchify mode.
 * `init`: (defaults to a no-op) A callback function that receives the browserify instance after it's created. Use this to call any of the [browserify API methods](https://github.com/substack/node-browserify#methods) on the instance, including `add`, `require`, `external`, `exclude` and so on.
+* `nodeModulesPath`: (defaults to `process.cwd()/node_modules`) Absolute path to node_modules.
 
 ## Changelog
 

@@ -1,6 +1,6 @@
 {
   "name": "broccoli-watchify",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Watchify plugin for Broccoli.",
   "main": "index.js",
   "scripts": {

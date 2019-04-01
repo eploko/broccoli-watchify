@@ -38,16 +38,18 @@
     "node-modules-path": "^1.0.2",
     "rsvp": "^4.8.4",
     "symlink-or-copy": "^1.2.0",
-    "through2": "^3.0.0",
-    "tree-sync": "^1.2.2",
+    "through2": "^3.0.1",
+    "tree-sync": "^2.0.0",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "broccoli": "^1.1.4",
+    "broccoli": "^2.3.0",
     "chai": "^4.2.0",
     "chai-files": "^1.4.0",
-    "fixturify": "^0.3.4",
-    "mocha": "^5.2.0",
-    "mocha-jshint": "^2.3.1"
+    "fixturify": "^1.2.0",
+    "mocha": "^6.0.2"
+  },
+  "engines": {
+    "node": "8.* || >= 10.*"
   }
 }

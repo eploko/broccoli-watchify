@@ -1,27 +1,22 @@
-var chai = require('chai');
-var chaiFiles = require('chai-files');
-var fixturify = require('fixturify');
-var Builder = require('broccoli').Builder;
-var path = require('path');
-var fs = require('fs-extra');
-var expect = chai.expect;
-var Watchify = require('../');
-var RSVP = require('rsvp');
+'use strict';
+
+const chai = require('chai');
+const chaiFiles = require('chai-files');
+const fixturify = require('fixturify');
+const Builder = require('broccoli').Builder;
+const path = require('path');
+const fs = require('fs-extra');
+const expect = chai.expect;
+const Watchify = require('../');
+const RSVP = require('rsvp');
 
 chai.use(chaiFiles);
-var file = chaiFiles.file;
-var dir = chaiFiles.dir;
-
-require('mocha-jshint')({
-  paths: [
-    'index.js',
-    'test/watchify-test.js'
-  ]
-});
+const file = chaiFiles.file;
+const dir = chaiFiles.dir;
 
 describe('broccoli-watchify', function() {
-  var INPUT_PATH = path.resolve(__dirname , '../tmp/testdir');
-  var pipeline;
+  const INPUT_PATH = path.resolve(__dirname , '../tmp/testdir');
+  let pipeline;
   beforeEach(function() {
     fs.mkdirpSync(INPUT_PATH);
   });
@@ -39,13 +34,13 @@ describe('broccoli-watchify', function() {
       'a.js' : "module.exports = 1;"
     });
 
-    var node = new Watchify(INPUT_PATH, {
+    const node = new Watchify(INPUT_PATH, {
       outputFile: 'bundled/app.js'
     });
 
     pipeline = new Builder(node);
 
-    return pipeline.build().then(function() {
+    return pipeline.build().then(() => {
       fs.statSync(pipeline.outputPath + '/bundled/app.js');
     });
   });
@@ -56,11 +51,11 @@ describe('broccoli-watchify', function() {
       'a.js' : "module.exports = 1;"
     });
 
-    var node = new Watchify(INPUT_PATH);
+    const node = new Watchify(INPUT_PATH);
 
     pipeline = new Builder(node);
 
-    var first;
+    let first;
     return pipeline.build().then(function() {
       first = fs.statSync(pipeline.outputPath + '/browserify.js');
       return new RSVP.Promise(function(resolve){
@@ -84,16 +79,16 @@ describe('broccoli-watchify', function() {
       'a.js' : "module.exports = 1;"
     });
 
-    var node = new Watchify(INPUT_PATH);
+    const node = new Watchify(INPUT_PATH);
 
     pipeline = new Builder(node);
 
     return pipeline.build().then(function() {
-      var outputFile = pipeline.outputPath + '/browserify.js';
+      const outputFile = pipeline.outputPath + '/browserify.js';
 
       expect(file(outputFile)).to.exist; // jshint ignore:line
 
-      var returnResult = evalAndInvoke(outputFile);
+      const returnResult = evalAndInvoke(outputFile);
 
       expect(returnResult.value).to.eql(1);
       expect(returnResult.wasCalled).to.eql(1);
@@ -104,11 +99,11 @@ describe('broccoli-watchify', function() {
 
       return pipeline.build();
     }).then(function(results) {
-      var outputFile = pipeline.outputPath + '/browserify.js';
+      const outputFile = pipeline.outputPath + '/browserify.js';
 
       expect(file(outputFile)).to.exist; // jshint ignore:line
 
-      var returnResult = evalAndInvoke(outputFile);
+      const returnResult = evalAndInvoke(outputFile);
 
       expect(returnResult.value).to.eql(222);
       expect(returnResult.wasCalled).to.eql(1);
@@ -117,15 +112,15 @@ describe('broccoli-watchify', function() {
 
 
   function evalAndInvoke(file) {
-    var wasCalled = 0;
-    var value;
+    let wasCalled = 0;
+    let value;
 
     function __invoke(a) {
       wasCalled++;
       value = a;
     }
 
-    var source = fs.readFileSync(file, 'UTF8');
+    const source = fs.readFileSync(file, 'UTF8');
     eval(source); // jshint ignore:line
 
     return {

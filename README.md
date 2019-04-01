@@ -13,13 +13,14 @@ npm install --save-dev broccoli-watchify
 ## Example
 
 ```js
-var watchify = require('broccoli-watchify');
+const watchify = require('broccoli-watchify');
 
-var options = {
+const options = {
   browserify: {
     entries: ['./app.js'],
     debug: true
   },
+  nodeModulesPath: process.cwd() + '/node_modules', // provide the node_modules you want to resolve from
   outputFile: 'bundled/app.js',
   cache: true,
   init: function (b) {
@@ -28,7 +29,7 @@ var options = {
   }
 };
 
-var tree = watchify(tree, options);
+const tree = watchify(tree, options);
 ```
 
 ## API
@@ -46,6 +47,13 @@ var tree = watchify(tree, options);
 * `nodeModulesPath`: (defaults to `process.cwd()/node_modules`) Absolute path to node_modules.
 
 ## Changelog
+
+### 2.0.0
+
+* expose a way to configure which node_modules to resolve from
+* support broccoli 1x and 2x
+* modernize codebase
+* upgrade dependencies
 
 ### 1.0.0
 

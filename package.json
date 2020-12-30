@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "test:debug": "mocha debug test"
+    "test:debug": "mocha debug test",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -34,13 +36,14 @@
     "fs-extra": "^7.0.1",
     "lodash.assignin": "^4.2.0",
     "md5hex": "^1.0.0",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^0.5.2",
     "node-modules-path": "^1.0.2",
     "rsvp": "^4.8.4",
     "symlink-or-copy": "^1.2.0",
     "through2": "^3.0.1",
     "tree-sync": "^2.0.0",
-    "xtend": "^4.0.1"
+    "xtend": "^4.0.1",
+    "snyk": "^1.437.3"
   },
   "devDependencies": {
     "broccoli": "^2.3.0",
@@ -51,5 +54,6 @@
   },
   "engines": {
     "node": "8.* || >= 10.*"
-  }
+  },
+  "snyk": true
 }

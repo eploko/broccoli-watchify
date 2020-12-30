@@ -1,0 +1,15 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.19.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - tree-sync > debug:
+        patched: '2020-12-30T20:22:18.709Z'
+    - tree-sync > fs-tree-diff > heimdalljs-logger > debug:
+        patched: '2020-12-30T20:22:18.709Z'
+  'npm:ms:20170412':
+    - tree-sync > debug > ms:
+        patched: '2020-12-30T20:22:18.709Z'
+    - tree-sync > fs-tree-diff > heimdalljs-logger > debug > ms:
+        patched: '2020-12-30T20:22:18.709Z'
